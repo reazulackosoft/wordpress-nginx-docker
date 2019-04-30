@@ -27,13 +27,11 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-wordpress}
     restart: always
-
   nginx:
     image: nginx:${NGINX_VERSION:-latest}
     container_name: nginx
     ports:
-      - '80:80'
-      - '443:443'
+      - '3007:80'
     volumes:
       - ${NGINX_CONF_DIR:-./nginx}:/etc/nginx/conf.d
       - ${NGINX_LOG_DIR:-./logs/nginx}:/var/log/nginx
@@ -43,3 +41,17 @@ services:
     depends_on:
       - wordpress
     restart: always
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - 8181:80
+    environment:
+     - MYSQL_USERNAME=sheraspace_dev
+     - MYSQL_PASSWORD=abcd@1234
+     - MYSQL_ROOT_PASSWORD=abcd@1234
+     - PMA_ABSOLUTE_URI=https://blog-dev.sheraspace.com/db
+     - PMA_HOST=172.18.0.2
+    depends_on:
+      - mysql
+    restart: always
+
